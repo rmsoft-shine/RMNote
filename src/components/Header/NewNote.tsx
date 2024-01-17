@@ -3,7 +3,6 @@
 import addNote from "@/api/addNote";
 import useApi from "@/hooks/useApi";
 import { useCurrentNote, useCurrentNotebook } from "@/store/store"
-import SaveNote from "./SaveNote";
 
 export default function NewNote() {
   const currentNote = useCurrentNote((state) => state.currentNote);
@@ -33,11 +32,8 @@ export default function NewNote() {
       }
     }
   }
-
-  if (currentNote) {
-    return <SaveNote />
-  }
-  else return (
+  
+  return (
     <button
       disabled={isPending}
       className="text-sm bg-blue-500 hover:bg-blue-600 text-white py-1.5 px-3 rounded disabled:bg-gray-200"

@@ -15,7 +15,7 @@ export default function NoteList() {
   useEffect(() => {
     const notes = Object.values(getNote())
       .filter((note) => note.notebook === currentNotebook?._id)
-      .sort((a, b) => +new Date(b.edittedAt) - +new Date(a.edittedAt));
+      .sort(() => -1);
 
     setNoteList(notes);
   }, [currentNotebook, currentNote])
