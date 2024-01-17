@@ -1,3 +1,5 @@
+import Notebook from "./Menu/Notebook";
+
 export default function Menu() {
   // const fold = " basis-0 w-0";
   // const spread = " basis-60";
@@ -9,6 +11,7 @@ export default function Menu() {
         // + (isMenu ? spread : fold)
       }
     >
+      <Notebook />
     </section>
   );
 }

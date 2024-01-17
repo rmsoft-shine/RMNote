@@ -1,5 +1,11 @@
-const storage = "rmnote";
-const getDB = () => JSON.parse(localStorage.getItem(storage) || "{}");
-const setDB = (db: NoteDB) => localStorage.setItem(storage, JSON.stringify(db));
+import { NoteDataType } from "@/types/note";
+import { NotebookDataType } from "@/types/notebook";
 
-export { storage, getDB, setDB };
+const notebookStorage = 'rm_notebook';
+const noteStorage = 'rm_note';
+const getNotebook = (): NotebookDataType => JSON.parse(localStorage.getItem(notebookStorage) || "{}");
+const setNotebook = (notebookData: NotebookDataType) => localStorage.setItem(notebookStorage, JSON.stringify(notebookData));
+const getNote = (): NoteDataType => JSON.parse(localStorage.getItem(noteStorage) || "{}");
+const setNote = (noteData: NoteDataType) => localStorage.setItem(noteStorage, JSON.stringify(noteData));
+
+export { getNotebook, setNotebook, getNote, setNote };

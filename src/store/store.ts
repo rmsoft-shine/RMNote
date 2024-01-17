@@ -1,41 +1,26 @@
-import { CurrentNoteType, CurrentNotebookType, IsSideMenuType } from "@/types/store";
+import { getNotebook } from "@/api/db";
+import { NotebookDataType } from "@/types/notebook";
+import { UseCurrentNoteType, UseCurrentNotebookType, UseSideMenuType, UseNotebookDataType } from "@/types/store";
 import { create } from "zustand";
 
-export const useSideMenuStore = create<IsSideMenuType>((set) => ({
+export const useSideMenuStore = create<UseSideMenuType>((set) => ({
   isSideMenu: true,
   toggleSideMenu: () => set((state: { isSideMenu: boolean }) => ({
     isSideMenu: !state.isSideMenu
   }))
 }))
 
-export const useNotebookList = create((set) => ({
-  notebookList: {},
-  setNotebookList: (list: { [key: string]: {} }) => set({ notebookLst: list })
+export const useNotebookData = create<UseNotebookDataType>((set) => ({
+  notebookData: {},
+  setNotebookData: (list: NotebookDataType) => set({ notebookData: list })
 }))
 
-export const useCurrentNotebook = create<CurrentNotebookType>((set) => ({
+export const useCurrentNotebook = create<UseCurrentNotebookType>((set) => ({
   currentNotebook: null,
-  setCurrentNotebook: (id: string) => set({ currentNotebook: id })
+  setCurrentNotebook: (_id: string | null) => set({ currentNotebook: _id })
 }));
 
-export const useCurrentNote = create<CurrentNoteType>((set) => ({
+export const useCurrentNote = create<UseCurrentNoteType>((set) => ({
   currentNote: null,
-  setCurrentNote: (id: string) => set({ currentNote: id })
+  setCurrentNote: (_id: string | null) => set({ currentNote: _id })
 }));
-
-// export const useAppStore = create((set) => ({
-//   isSideMenu: true,
-//   notebookList: {},
-//   currentNotebook: null,
-//   currentNote: null,
-//   setIsSideMenu: () => set((state) => ({ isSideMenu: !state.isSideMenu})),
-//   setNotebookList: (list: {
-//     [key: string]: {}
-//   }) => set(() => ({ notebookList: list, })),
-//   setCurrentNotebook: (id: string) => set(() => ({
-//     currentNotebook: id,
-//   })),
-//   setCurrentNote: (id: string) => set(() => ({
-//     currentNote: id,
-//   }))
-// }));

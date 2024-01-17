@@ -1,29 +1,30 @@
 import { z } from 'zod';
+import { notebookDataSchema } from './notebook';
 
-const isSideMenuSchema = z.object({
+const useSideMenuSchema = z.object({
   isSideMenu: z.boolean(),
   toggleSideMenu: z.function().returns(z.void()),
 })
 
-export type IsSideMenuType = z.infer<typeof isSideMenuSchema>;
+export type UseSideMenuType = z.infer<typeof useSideMenuSchema>;
 
-const notebookListSchema = z.object({
-  notebookList: z.object({}),
-  setNotebookList: z.function().args(z.object({})).returns(z.void()),
+const useNotebookDataSchema = z.object({
+  notebookData: notebookDataSchema,
+  setNotebookData: z.function().args(z.object({})).returns(z.void()),
 })
 
-export type NotebookListType = z.infer<typeof notebookListSchema>
+export type UseNotebookDataType = z.infer<typeof useNotebookDataSchema>
 
-const currentNotebookSchema = z.object({
+const useCurrentNotebookSchema = z.object({
   currentNotebook: z.string().nullable(),
-  setCurrentNotebook: z.function().args(z.string().cuid2()).returns(z.void()),
+  setCurrentNotebook: z.function().args(z.string().cuid2().nullable()).returns(z.void()),
 })
 
-export type CurrentNotebookType = z.infer<typeof currentNotebookSchema>;
+export type UseCurrentNotebookType = z.infer<typeof useCurrentNotebookSchema>;
 
-const currentNoteSchema = z.object({
+const useCurrentNoteSchema = z.object({
   currentNote: z.string().nullable(),
-  setCurrentNote: z.function().args(z.string().cuid2()).returns(z.void()),
+  setCurrentNote: z.function().args(z.string().cuid2().nullable()).returns(z.void()),
 })
 
-export type CurrentNoteType = z.infer<typeof currentNoteSchema>;
+export type UseCurrentNoteType = z.infer<typeof useCurrentNoteSchema>;

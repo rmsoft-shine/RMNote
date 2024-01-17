@@ -1,26 +1,49 @@
 import Res from "./Res";
-import { getDB, setDB } from "./db";
+import { createId } from "@paralleldrive/cuid2";
+import { getNotebook, setNotebook } from "./db";
+import { NotebookDataType, notebookSchema } from "@/types/notebook";
 
-export default async function addNotebook(name: string) {
-  const response = new Res<NoteDB>();
+export default async function addNotebook(name: string, parent: string | null = null) {
+  const response = new Res<NotebookDataType>();
 
   try {
     if (name === "") {
       throw new Error("한 글자 이상 입력해야 합니다.");
     }
 
-    const db = getDB();
+    const db = getNotebook();
 
-    if (Object.keys(db).includes(name)) {
+    const duplicatedCheck = Object.values(db)
+        .filter((notebook) => notebook.parent === parent)
+        .filter((notebook) => notebook.name === name)
+        .length > 0;
+
+    if (duplicatedCheck) {
       throw new Error(`The name "${name}" is already taken.`);
     } else {
-      const newData = {
-        ...db,
-        [name]: [],
+      const id = createId();
+      const newNotebook = {
+        _id: id,
+        name: name,
+        cover: "red",
+        parent: parent,
       };
-      setDB(newData);
-      response.setData(newData);
-      response.setOk();
+
+      const parse = notebookSchema.safeParse(newNotebook);
+
+      if (parse.success) {
+        const newData = {
+          ...db,
+          [id]: parse.data
+        }
+
+        setNotebook(newData);
+        response.setData(newData);
+        response.setOk();
+      } else {
+        console.log(parse.error);
+        throw new Error('잘못된 데이터 형식입니다.');
+      }
     }
   } catch (error) {
     if (error instanceof Error) {

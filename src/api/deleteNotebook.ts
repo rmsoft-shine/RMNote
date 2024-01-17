@@ -1,16 +1,18 @@
 import Res from "./Res";
-import { getDB, setDB } from "./db";
+import { getNotebook, setNotebook } from "./db";
+import { NotebookDataType } from "@/types/notebook";
 
-export default async function deleteNotebook(name: string) {
-  const response = new Res<NoteDB>();
+export default async function deleteNotebook(_id: string) {
+  const response = new Res<NotebookDataType>();
 
   try {
-    const db = getDB();
-    if (!Object.keys(db).includes(name)) {
+    console.log('in try')
+    const db = getNotebook();
+    if (!Object.keys(db).includes(_id)) {
       throw new Error(`존재하지 않는 Notebook입니다.`);
     } else {
-      delete db[name];
-      setDB(db);
+      delete db[_id];
+      setNotebook(db);
       response.setData(db);
       response.setOk();
     }

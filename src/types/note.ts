@@ -1,36 +1,16 @@
 import { z } from 'zod';
-import { createId } from '@paralleldrive/cuid2';
+import { EditorState } from 'lexical';
 
-const noteSchema = z.object({
-  id: z.string().cuid2(),
-  content: z.string(),
+export const noteSchema = z.object({
+  _id: z.string().cuid2(),
+  notebook: z.string().cuid2(),
+  content: z.custom<EditorState>(),
   edittedAt: z.date(),
   type: z.literal('NOTE')
 })
 
 export type NoteType = z.infer<typeof noteSchema>;
 
-// const BaseNotebookSchema = z.object({
-//   id: z.string().cuid2(),
-//   type: z.literal('NOTEBOOK')
-// });
+export const noteDataSchema = z.record(z.string().cuid2(), noteSchema)
 
-// const ExtendedNotebookSchema = z.record(z.string().cuid2(), BaseNotebookSchema).optional().and(z.record(NoteSchema).optional());
-
-// export type NotebookType = z.infer<typeof BaseNotebookSchema>
-
-// let a: NB;
-
-// a = {
-//   id: createId(),
-//   type: 'NOTEBOOK',
-// }
-
-// type NB = {
-//   id: string;
-//   type: 'NOTEBOOK',
-// } & {
-//   [key: string]: NoteType | NB | undefined;
-// }
-
-// type NNB = Partial<NB>
+export type NoteDataType = z.infer<typeof noteDataSchema>;
