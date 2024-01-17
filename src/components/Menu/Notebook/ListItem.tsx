@@ -1,28 +1,33 @@
-import { getNote } from "@/api/db";
-import deleteNotebook from "@/api/deleteNotebook";
-import ButtonIcon from "@/components/Common/Buttonicon";
-import useApi from "@/hooks/useApi";
-import { useCurrentNotebook, useNotebookData } from "@/store/store";
-import { NotebookType } from "@/types/notebook";
 import { MouseEvent } from "react";
+import { getNote } from "@/api/db";
+import { useCurrentNote, useCurrentNotebook, useNotebookData } from "@/store/store";
+import deleteNotebook from "@/api/deleteNotebook";
+import useApi from "@/hooks/useApi";
+import ButtonIcon from "@/components/Common/Buttonicon";
+import { NotebookType } from "@/types/notebook";
 
 export default function ListItem({
   notebook
 }: {
   notebook: NotebookType
 }) {
-  const currentNotebook = useCurrentNotebook(state => state.currentNotebook);
-  const setNotebookData = useNotebookData(state => state.setNotebookData);
-  const setCurrentNotebook = useCurrentNotebook(state => state.setCurrentNotebook);
+  const currentNote = useCurrentNote((state) => state.currentNote);
+  const currentNotebook = useCurrentNotebook((state) => state.currentNotebook);
+  const setCurrentNote = useCurrentNote((state) => state.setCurrentNote);
+  const setCurrentNotebook = useCurrentNotebook((state) => state.setCurrentNotebook);
+  const setNotebookData = useNotebookData((state) => state.setNotebookData);
   const { isPending, run } = useApi(deleteNotebook);
 
   if (!notebook) return;
 
-  const isSelected = currentNotebook === notebook._id;
-  const notes = Object.entries(getNote());
+  const isSelected = currentNotebook?._id === notebook._id;
+  const notes = Object.values(getNote()).filter((note) => note.notebook === notebook._id);
 
   const selectThis = async () => {
-    setCurrentNotebook(notebook._id);
+    if (currentNote && currentNote.notebook !== notebook._id) {
+      setCurrentNote(null);
+    }
+    setCurrentNotebook(notebook);
   }
 
   const deleteThis = async (event: MouseEvent) => {
@@ -34,7 +39,7 @@ export default function ListItem({
       const res = await run(notebook._id);
 
       if (res.ok && res.payload) {
-        if (currentNotebook === notebook._id) {
+        if (currentNotebook?._id === notebook._id) {
           // 삭제한 노트북이 현재 선택한 노트북인 경우,
           // 노트 목록도 사라지게 하기 위해서
           setCurrentNotebook(null);
@@ -58,7 +63,7 @@ export default function ListItem({
     >
       <div className="inline-block w-6 h-8 bg-red-300 min-w-[1.5rem] rounded"></div>
       <h3 className="shrink whitespace-nowrap">{notebook.name}</h3>
-      <small className="text-xs text-gray-400">{0}</small>
+      <small className="text-xs text-gray-400">{notes.length}</small>
       <ButtonIcon
         disabled={isPending}
         icon="delete"

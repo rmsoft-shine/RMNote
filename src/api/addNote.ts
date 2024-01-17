@@ -1,26 +1,31 @@
 import Res from "./Res";
-import { getDB, setDB } from "./db";
+import { createId } from "@paralleldrive/cuid2";
+import { getNote, setNote } from "./db";
+import { NoteType } from "@/types/note";
+import { NotebookDataType } from "@/types/notebook";
 
-export default async function addNote(notebook: keyof NoteDB) {
-  const response = new Res<Note>();
+export default async function addNote(_id: keyof NotebookDataType) {
+  const response = new Res<NoteType>();
 
   try {
-    const db = getDB();
+    const db = getNote();
+
+    const id = createId();
     const newWrite = {
-      content: "",
+      _id: id,
+      notebook: _id,
+      content: null,
       edittedAt: new Date().toString(),
-    };
-    const target = db[notebook];
-    const existing = target[0]?.content === "";
-    if (existing) {
-      response.setData({ ...newWrite, edittedAt: new Date().toString() });
-      throw new Error("이미 작성 중입니다.");
-    } else {
-      target.unshift(newWrite);
-      setDB(db);
-      response.setData(newWrite);
-      response.setOk();
+    }; // new Note Data
+
+    const newData = {
+      ...db,
+      [id]: newWrite
     }
+
+    setNote(newData);
+    response.setData(newWrite);
+    response.setOk();
   } catch (error) {
     if (error instanceof Error) {
       console.log(error.message);

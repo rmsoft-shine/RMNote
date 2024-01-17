@@ -1,12 +1,11 @@
 import { z } from 'zod';
-import { EditorState } from 'lexical';
+import { SerializedEditorState } from 'lexical';
 
 export const noteSchema = z.object({
   _id: z.string().cuid2(),
   notebook: z.string().cuid2(),
-  content: z.custom<EditorState>(),
-  edittedAt: z.date(),
-  type: z.literal('NOTE')
+  content: z.custom<SerializedEditorState>().nullable(),
+  edittedAt: z.string(),
 })
 
 export type NoteType = z.infer<typeof noteSchema>;

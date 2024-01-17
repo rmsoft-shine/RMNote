@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback, useState } from "react";
 
 export default function useApi<T>(callback: (...args: any[]) => Promise<T>) {

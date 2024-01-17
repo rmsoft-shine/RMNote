@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 export default function AddNotebook({ onClick }: { onClick: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const { isPending, error, run } = useApi(addNotebook);
-  const update = useNotebookData((state) => state.setNotebookList);
+  const update = useNotebookData((state) => state.setNotebookData);
 
   useEffect(() => {
     if (inputRef.current) {

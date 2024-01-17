@@ -1,17 +1,17 @@
 'use client'
 
-import { useNotebookData } from "@/store/store";
 import { MouseEvent, useEffect, useState } from "react"
+import { useNotebookData } from "@/store/store";
+import { getNotebook } from "@/api/db";
 import ButtonIcon from "../Common/Buttonicon";
 import ListItem from "./Notebook/ListItem";
 import AddNotebook from "./Notebook/AddNotebook";
-import { getNotebook } from "@/api/db";
 
 export default function Notebook() {
-  const notebookData = useNotebookData((state) => state.notebookData);
-  const setNotebookData = useNotebookData((state) => state.setNotebookData);
   const [isMore, setIsMore] = useState(false);
   const [isModal, setIsModal] = useState(false);
+  const notebookData = useNotebookData((state) => state.notebookData);
+  const setNotebookData = useNotebookData((state) => state.setNotebookData);
 
   const list = Object.entries(notebookData);
   

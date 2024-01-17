@@ -1,7 +1,7 @@
-import { getNotebook } from "@/api/db";
-import { NotebookDataType } from "@/types/notebook";
-import { UseCurrentNoteType, UseCurrentNotebookType, UseSideMenuType, UseNotebookDataType } from "@/types/store";
 import { create } from "zustand";
+import { NoteType } from "@/types/note";
+import { NotebookDataType, NotebookType } from "@/types/notebook";
+import { UseCurrentNoteType, UseCurrentNotebookType, UseSideMenuType, UseNotebookDataType } from "@/types/store";
 
 export const useSideMenuStore = create<UseSideMenuType>((set) => ({
   isSideMenu: true,
@@ -17,10 +17,10 @@ export const useNotebookData = create<UseNotebookDataType>((set) => ({
 
 export const useCurrentNotebook = create<UseCurrentNotebookType>((set) => ({
   currentNotebook: null,
-  setCurrentNotebook: (_id: string | null) => set({ currentNotebook: _id })
+  setCurrentNotebook: (notebook: NotebookType | null) => set({ currentNotebook: notebook })
 }));
 
 export const useCurrentNote = create<UseCurrentNoteType>((set) => ({
   currentNote: null,
-  setCurrentNote: (_id: string | null) => set({ currentNote: _id })
+  setCurrentNote: (note: NoteType | null) => set({ currentNote: note })
 }));

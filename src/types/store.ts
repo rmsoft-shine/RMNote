@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { notebookDataSchema } from './notebook';
+import { noteSchema } from './note';
+import { notebookDataSchema, notebookSchema } from './notebook';
 
 const useSideMenuSchema = z.object({
   isSideMenu: z.boolean(),
@@ -16,15 +17,15 @@ const useNotebookDataSchema = z.object({
 export type UseNotebookDataType = z.infer<typeof useNotebookDataSchema>
 
 const useCurrentNotebookSchema = z.object({
-  currentNotebook: z.string().nullable(),
-  setCurrentNotebook: z.function().args(z.string().cuid2().nullable()).returns(z.void()),
+  currentNotebook: notebookSchema.nullable(),
+  setCurrentNotebook: z.function().args(notebookSchema.nullable()).returns(z.void()),
 })
 
 export type UseCurrentNotebookType = z.infer<typeof useCurrentNotebookSchema>;
 
 const useCurrentNoteSchema = z.object({
-  currentNote: z.string().nullable(),
-  setCurrentNote: z.function().args(z.string().cuid2().nullable()).returns(z.void()),
+  currentNote: noteSchema.nullable(),
+  setCurrentNote: z.function().args(noteSchema.nullable()).returns(z.void()),
 })
 
 export type UseCurrentNoteType = z.infer<typeof useCurrentNoteSchema>;

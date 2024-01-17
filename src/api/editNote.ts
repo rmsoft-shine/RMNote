@@ -1,23 +1,35 @@
 import Res from "./Res";
-import { getDB, storage } from "./db";
+import { NoteType } from "@/types/note";
+import { getNote, setNote } from "./db";
+import { SerializedEditorState } from "lexical";
 
 export default async function editNote(
-  notebook: keyof NoteDB,
-  index: number,
-  content: string
+  _id: string,
+  editorState: SerializedEditorState,
 ) {
-  const response = new Res<CurrentNote>();
+  const response = new Res<NoteType>();
 
   try {
-    const db = getDB();
-    const write = { content, edittedAt: new Date().toString() };
-    const target = db[notebook];
-    target[index] = write;
-    localStorage.setItem(storage, JSON.stringify(db));
+    const db = getNote();
+    const target = db[_id];
+
+    const write = { 
+      ...target,
+      content: editorState,
+      edittedAt: new Date().toString()
+    };
+
+    const newData = {
+      ...db,
+      [_id]: {
+        ...write
+      }
+    };
+
+    setNote(newData);
 
     response.setData({
-      index: index,
-      note: write,
+      ...write
     });
     response.setOk();
   } catch (error) {

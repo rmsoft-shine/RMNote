@@ -1,21 +1,18 @@
 import Res from "./Res";
-import { getDB, setDB } from "./db";
+import { getNote, setNote } from "./db";
 
-export default async function deleteNote(
-  notebook: keyof NoteDB,
-  index: keyof Note
-) {
-  const response = new Res<NoteDB>();
+export default async function deleteNote(_id: string) {
+  const response = new Res();
 
   try {
-    const db = getDB();
-    const target = db[notebook];
-    if (!target[index]) {
+    const db = getNote();
+    const target = db[_id];
+
+    if (!target) {
       throw new Error("존재하지 않는 Note입니다.");
     } else {
-      target.splice(index, 1);
-      setDB(db);
-      response.setData(db);
+      delete db[_id];
+      setNote(db);
       response.setOk();
     }
   } catch (error) {

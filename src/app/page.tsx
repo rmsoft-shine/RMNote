@@ -1,4 +1,4 @@
-import Editor from '@/components/Editor'
+import Write from '@/components/Write'
 import Header from '@/components/Header'
 import Menu from '@/components/Menu'
 import NoteList from '@/components/NoteList'
@@ -10,7 +10,7 @@ export default function Home() {
       <main className="w-full h-main flex divide-x">
         <Menu />
         <NoteList />
-        <Editor />
+        <Write />
       </main>
     </div>
   )
