@@ -10,6 +10,26 @@ export default function ListItem({ note }: { note: NoteType }) {
   const update = useCurrentNote((state) => state.setCurrentNote);
   const pos = useRef({ x: 0, y: 0 });
 
+  let title = "", content = "";
+  const noteContent = note.content as any;
+  if (noteContent) {
+    const children = noteContent.root.children.filter((c: any) => c.children.length > 0); // 1 depth
+    if (children.length > 1) {
+      if (children[0].children.length) {
+        children[0].children.forEach((node: any) => title += node.text);
+      }
+      if (children[1].children.length) {
+        children[0].children.forEach((node: any) => content += node.text);
+      }
+    }
+    else if (children.length === 1) {
+      const textNode = children[0].children;
+      if (textNode.length) {
+        textNode.forEach((node: any) => title += node.text);
+      }
+    }
+  }
+
   const selectThis = () => {
     update(note);
   }
@@ -27,14 +47,14 @@ export default function ListItem({ note }: { note: NoteType }) {
   return (
     <>
       <li
-          className={`p-6 w-full overflow-hidden cursor-pointer space-y-3 ${
+          className={`p-6 w-full cursor-pointer space-y-3 ${
             isSelected ? "bg-blue-100" : ""
           }`}
           onClick={selectThis}
           onContextMenu={contextHandler}
         >
-          <h3 className="text-lg font-bold h-6">{"New Note"}</h3>
-          <p className="h-6">{"No additional text"}</p>
+          <h3 className="text-lg font-bold h-6 overflow-hidden text-nowrap text-ellipsis">{title || "New Note"}</h3>
+          <p className="h-6 overflow-hidden text-nowrap text-ellipsis">{content || "No additional text"}</p>
           <time className="block text-xs text-gray-400">
             {timeFormat(note.edittedAt)}
           </time>

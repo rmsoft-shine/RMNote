@@ -1,8 +1,10 @@
 import deleteNote from "@/api/deleteNote";
 import useApi from "@/hooks/useApi";
-import { useNoteData } from "@/store/store";
+import { useCurrentNote, useNoteData } from "@/store/store";
 
 export default function DeleteThis({ id }: { id: string }) {
+  const currentNote = useCurrentNote((state) => state.currentNote);
+  const setCurrentNote = useCurrentNote((state) => state.setCurrentNote);
   const setNoteData = useNoteData((state) => state.setNoteData);
   const { run } = useApi(deleteNote);
 
@@ -14,6 +16,9 @@ export default function DeleteThis({ id }: { id: string }) {
 
       if (res.ok && res.payload) {
         setNoteData(res.payload);
+        if (currentNote?._id === id) {
+          setCurrentNote(null);
+        }
         console.log("삭제 완료");
       } else {
         if (res.error) {
