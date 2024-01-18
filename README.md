@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# RMNote
 
-## Getting Started
+## 구현 내용
 
-First, run the development server:
+  1. 데이터 스키마 정의 및 DB 호출, 저장 함수
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+    - 기존 DB는 로컬스토리지의 한 키(rmonte)에 전부 저장하며, 가장 상위의 노트북들의 목록을 기준 문서로 하고 하위에 여러 번 중첩된 문서를 추가하도록 해 앱에서 보이는 것과 같게 직관적으로 구현했습니다.
+    - 기존의 데이터는 해당 데이터의 id를 키로 하여 저장했는데, nested 노트북을 구현한다면 노트북과 노트를 구분할 필요가 생깁니다.
+    - 처음에는 데이터에 type 속성을 추가해 구분하려고 했으나, 노트북의 키 값과 노트의 키 값이 마구 섞여 있어, 서로의 데이터를 오염 시키거나 잘못된 데이터를 불러올 가능성이있다고 생각했고, 노트북과 노트는 서로 다른 형태와 목적을 가진 데이터이기 때문에 저장소를 구분하는 것이 맞다고 판단했습니다. 따라서 각각 rm_notebook, rm_note 두 개의 키에 나누어 저장하도록 했습니다.
+    - 노트가 어떤 노트북에 속하는지를 판단하기 위해 notebook 키에 참조할 수 있는 노트북 id를 저장하도록 했습니다.
+    - 로컬스토리지의 키를 데이터 콜렉션으로 활용하고 있기 때문에 localStorage.removeItem(key)는 불가능하고, 직접 객체를 수정해서 다시 저장하는 방식으로 api들을 구현했습니다.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+    - 중복되지 않는 데이터를 구현하기 위해서는 데이터를 구분하기 위한 유니크한 값이 필요했고, 이 값을 생성해주는 라이브러리를 사용하기로 했습니다. 여러 옵션 중 uuid는 너무 길어 많은 용량을 차지할 것이었습니다. cuid는 uuid 보다 짧고 따라서 적은 용량을 차지하지만, uuid 보다는 유니크한 값이 아닐 가능성이 높았습니다.
+    - 실제로 사용되는 앱이 아니었기 때문에 상기한 단점을 감수하고서라도 cuid를 사용했습니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+  2. localStorage 사용 이슈
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+    - zustand store 구성 시 초기값을 노트북 정보를 getNotebook()을 통해 로컬 스토리지를 가져오도록 했는데, 이 과정이 서버에서 실행 돼 localStorage를 참조하지 못하는 오류가 발생했습니다.
+    - 초기값은 비워두고, Notebook 컴포넌트 마운트 시 업데이트 되도록 변경했습니다.
 
-## Learn More
+  3. addNote 예외 사항 처리
 
-To learn more about Next.js, take a look at the following resources:
+    - 이미 새로 작성 시작한 노트가 있다면 addNote api가 새로운 노트를 만들지 않아야 하는데, 이를 api에서 처리하기에는 판단에 필요한 요소들을 많이 넘겨줘야 하니 프론트에서 해당 사항을 판단해서 처리하는 것이 낫다고 판단했습니다.
+    - addNote 시 content가 null인 새로운 데이터를 생성하는데, 이를 바탕으로 currentNote의 상태를 파악해 content가 null인 경우 api 요청을 보내지 않도록 수정했습니다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  4. 노트 데이터 저장 시 edittedAt 속성값에 대하여
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+    - zod z.string().datetime()과 new Date().toString()의 타입이 일치하지 않았습니다.
+    - 문자열화 된 Date는 Date 생성자에 인자로 넣을 경우 다시 원래의 Date 객체로 변환되기 때문에, 해당 속성값은 new Date().toString() 형태로 저장하고, 타입을 string으로 체크하기로 했습니다.
 
-## Deploy on Vercel
+  5. 노트북 리스트에서 해당 노트북의 노트 개수 표시 방법에 대하여
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    - ListItem 컴포넌트에서 해당 노트북에 속해 있는 노트의 갯수를 표시해야 했습니다.
+    - 노트북과 노트의 데이터가 나누어져 저장되기 때문에, 노트북 데이터에 개수 정보를 미리 입력해두는 것을 생각했으나, 이 방법은 데이터가 수정되는 과정에서 오류에 따라 정확성을 잃을 수 있다고 판단했습니다.
+    - 따라서 노트 데이터에서 해당 노트북을 부모로 하는, 즉 notebook 속성의 값과 노트북의 id가 일치하는 노트만 필터링해 개수를 판단했습니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+  6. 노트 delete 시 노트북리스트와 노트리스트의 재렌더링 이슈
+    
+    - deleteNote 시 노트북 리스트의 노트 개수와, 노트 리스트가 해당 사항을 반영하여 다시 렌더링 돼야 했습니다.
+    - 두 리스트 모두 currentNote를 구독하고 있었기 때문에, currentNote의 상태를 { ...currentNote }로 복사하여 강제로 상태를 업데이트 하려고 했지만 이전과 상태가 동일한 경우여서 렌더가 발생하지 않았습니다.
+    - noteData 상태를 추가하여 두 리스트가 해당 상태를 구독하고, deleteNote 시 해당 상태를 동기화함으로써 다시 렌더될 수 있도록 조치하였습니다.
+
+
+## 미해결 과제 및 아이디어
+
+  1. 노트 저장 방식에 대하여
+
+    - 현재는 에디터 상단의 저장 버튼을 통해 저장하도록 돼있습니다.
+    - UpNote 앱과 유사하게 구현하기 위해서는, onChange 이벤트와 onBlur 이벤트 시 저장이 돼야 할 것 같습니다.
+    - onChange 플러그인에서 디바운싱을 활용해 입력이 지속될 경우에는 저장을 멈추고, 입력이 끝난 경우에 저장하도록 구현하려고 했습니다.
+    - 두 가지 이벤트를 동시에 컨트롤 하는 플러그인을 생성했으나, 알려진 방식의 blur 이벤트 처리 동작에서는 이벤트가 너무 많이 발생했고, 그 과정에서 다른 노트를 클릭한 경우 다른 노트의 내용까지 blur 전까지 입력했던 내용으로 바뀌게 됩니다.
+
+  2. 노트 리스트의 ContextMenu 사용에 대하여
+
+    - ContextMenu 사용 시 해당 노트가 선택되도록 (currentNote의 상태가 변하도록) 설정했더니, 기존 컨텍스트 메뉴의 노출을 유지하기 위해 설정한 인풋 포커스가 새로운 상태인 currentNote의 에디터에 포커스 되면서 바로 해제되어 컨텍스트메뉴가 나타나지 않았습니다.
+    - 현재는 에디터에 포커스를 이동하지 않는 상태입니다.
+
+  3. 노트북 리스트 재귀적 렌더링
+
+    - nested 노트북을 구현할 경우, Listitem을 재귀적으로 렌더링할 필요가 있다고 생각합니다.
+    - 가장 상위의 노트북 리스트는 parent === null인 노트북만 렌더하면 될 것 같습니다만, 이후 그 리스트를 순회하며 parent를 비교하며 렌더하고, 이를 재귀적으로 반복하면 될 것 같다고 생각합니다만 구현하지 못했습니다.
+  
+  4. 페이지 처음 렌더 시에 요소들의 위치가 이상한 현상
+    
+    - 페이지를 새로고침 하면 처음 렌더 시에 요소들의 위치가 예상한 위치에 있지 않고, 가운데에서 양 옆으로 펼쳐지듯이 나타납니다.
+    - div#App의 width가 조절되며 일어나는 현상이라고 생각하는데, 왜 고정된 값으로 시작하지 않는지 알 수 없습니다.
+
+  5. addNote 새로운 노트 생성 안 할 시 에디터 포커싱

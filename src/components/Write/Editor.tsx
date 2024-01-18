@@ -4,8 +4,7 @@ import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
-import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary"; 
-import AutoFocusPlugin from "./Editor/AutoFocusPlugin";
+import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import CustomOnChangePlugin from "./Editor/CustomOnChangePlugin";
 import SaveNote from "./Editor/Header/SaveNote";
 
@@ -20,9 +19,11 @@ export default function Editor() {
     onError,
   };
 
+  console.log('editor render')
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <header className="h-header p-1.5">
+      <header className="h-header bg-neutral-100 flex items-center justify-between py-2 px-4 border-stone-300 border-b">
         <SaveNote />
       </header>
       <RichTextPlugin
@@ -32,7 +33,6 @@ export default function Editor() {
       />
       <CustomOnChangePlugin />
       <HistoryPlugin />
-      <AutoFocusPlugin />
     </LexicalComposer>
   )
 }

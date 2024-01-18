@@ -1,3 +1,5 @@
+/* 사용 중지 */
+
 import { useEffect, useLayoutEffect } from 'react'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useCurrentNote } from '@/store/store';
@@ -17,10 +19,10 @@ export default function AutoFocusPlugin() {
     }
   }, [editor, currentNote])
 
-  useEffect(() => {
-    // Focus the editor when the effect fires!
-    editor.focus();
-  }, [editor, currentNote]);
+  // useEffect(() => {
+  //   // Focus the editor when the effect fires!
+  //   editor.focus();
+  // }, [editor, currentNote]);
 
   return null;
 }

@@ -18,7 +18,7 @@ export default function ListItem({ note }: { note: NoteType }) {
     event.preventDefault();
     pos.current.x = event.pageX;
     pos.current.y = event.pageY;
-    // selectThis();
+    selectThis();
     setIsContext(true);
   }
 
