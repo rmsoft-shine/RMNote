@@ -1,8 +1,8 @@
 'use client'
 
 import { MouseEvent, useEffect, useState } from "react"
-import { useNotebookData } from "@/store/store";
-import { getNotebook } from "@/api/db";
+import { useNoteData, useNotebookData } from "@/store/store";
+import { getNote, getNotebook } from "@/api/db";
 import ButtonIcon from "../Common/Buttonicon";
 import ListItem from "./Notebook/ListItem";
 import AddNotebook from "./Notebook/AddNotebook";
@@ -12,8 +12,9 @@ export default function Notebook() {
   const [isModal, setIsModal] = useState(false);
   const notebookData = useNotebookData((state) => state.notebookData);
   const setNotebookData = useNotebookData((state) => state.setNotebookData);
+  const setNoteData = useNoteData((state) => state.setNoteData);
 
-  const list = Object.entries(notebookData);
+  const list = Object.values(notebookData);
   
   const isMoreHandler = () => {
     setIsMore((prev) => !prev);
@@ -21,6 +22,7 @@ export default function Notebook() {
 
   useEffect(() => {
     setNotebookData(getNotebook());
+    setNoteData(getNote());
   }, [])
 
   return (
@@ -47,8 +49,7 @@ export default function Notebook() {
       </h2>
       {isMore && (
         <ul className="w-full transition">
-          {list.map((entries) => {
-            const notebook = entries[1]; 
+          {list.map((notebook) => {
             return (
               <ListItem
                 notebook={notebook}

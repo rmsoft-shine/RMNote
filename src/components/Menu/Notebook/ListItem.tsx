@@ -1,6 +1,6 @@
 import { MouseEvent } from "react";
 import { getNote } from "@/api/db";
-import { useCurrentNote, useCurrentNotebook, useNotebookData } from "@/store/store";
+import { useCurrentNote, useCurrentNotebook, useNoteData, useNotebookData } from "@/store/store";
 import deleteNotebook from "@/api/deleteNotebook";
 import useApi from "@/hooks/useApi";
 import ButtonIcon from "@/components/Common/Buttonicon";
@@ -13,6 +13,7 @@ export default function ListItem({
 }) {
   const currentNote = useCurrentNote((state) => state.currentNote);
   const currentNotebook = useCurrentNotebook((state) => state.currentNotebook);
+  const noteData = useNoteData((state) => state.noteData);
   const setCurrentNote = useCurrentNote((state) => state.setCurrentNote);
   const setCurrentNotebook = useCurrentNotebook((state) => state.setCurrentNotebook);
   const setNotebookData = useNotebookData((state) => state.setNotebookData);
@@ -21,7 +22,7 @@ export default function ListItem({
   if (!notebook) return;
 
   const isSelected = currentNotebook?._id === notebook._id;
-  const notes = Object.values(getNote()).filter((note) => note.notebook === notebook._id);
+  const notes = Object.values(noteData).filter((note) => note.notebook === notebook._id);
 
   const selectThis = async () => {
     if (currentNote && currentNote.notebook !== notebook._id) {

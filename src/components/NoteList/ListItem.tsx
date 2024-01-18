@@ -2,6 +2,7 @@ import { useCurrentNote } from "@/store/store";
 import { NoteType } from "@/types/note";
 import { PointerEvent, useRef, useState } from "react";
 import ContextMenu from "../Common/ContextMenu";
+import DeleteThis from "./ContextMenu/DeleteThis";
 
 export default function ListItem({ note }: { note: NoteType }) {
   const [isContext, setIsContext] = useState(false);
@@ -17,7 +18,7 @@ export default function ListItem({ note }: { note: NoteType }) {
     event.preventDefault();
     pos.current.x = event.pageX;
     pos.current.y = event.pageY;
-    selectThis();
+    // selectThis();
     setIsContext(true);
   }
 
@@ -44,7 +45,7 @@ export default function ListItem({ note }: { note: NoteType }) {
           y={pos.current.y}
           onBlur={() => { setIsContext(false) }}
           >
-            <></>
+            <DeleteThis id={note._id}/>
           </ContextMenu>
         )}
       </>

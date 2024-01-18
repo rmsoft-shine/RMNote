@@ -1,13 +1,15 @@
 'use client'
 
 import addNote from "@/api/addNote";
+import { getNote } from "@/api/db";
 import useApi from "@/hooks/useApi";
-import { useCurrentNote, useCurrentNotebook } from "@/store/store"
+import { useCurrentNote, useCurrentNotebook, useNoteData } from "@/store/store"
 
 export default function NewNote() {
   const currentNote = useCurrentNote((state) => state.currentNote);
   const currentNotebook = useCurrentNotebook((state) => state.currentNotebook);
   const setCurrentNote = useCurrentNote((state) => state.setCurrentNote);
+  const setNoteData = useNoteData((state) => state.setNoteData);
   const { isPending, run } = useApi(addNote);
 
   const writeNew = async () => {
@@ -23,6 +25,7 @@ export default function NewNote() {
       const res = await run(notebook);
       if (res.ok && res.payload) {
         setCurrentNote(res.payload);
+        setNoteData(getNote());
       } else {
         if (res.error) {
           alert(

@@ -1,6 +1,3 @@
-import deleteNote from "@/api/deleteNote";
-import useApi from "@/hooks/useApi";
-import { useCurrentNote } from "@/store/store";
 import { useEffect, useRef } from "react";
 
 export default function ContextMenu({
@@ -16,8 +13,6 @@ export default function ContextMenu({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const isClick = useRef(false);
-  const update = useCurrentNote((state) => state.currentNote);
-  const { run } = useApi(deleteNote);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -56,12 +51,6 @@ export default function ContextMenu({
         onBlur={blurHandler}
       />
       {children}
-      {/* <li
-        className="hover:bg-gray-200 py-1 px-6 cursor-pointer"
-        onClick={deleteCurrent}
-      >
-        이 노트 삭제하기
-      </li> */}
     </ul>
   );
 }

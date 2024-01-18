@@ -1,8 +1,9 @@
+import { NoteDataType } from "@/types/note";
 import Res from "./Res";
 import { getNote, setNote } from "./db";
 
 export default async function deleteNote(_id: string) {
-  const response = new Res();
+  const response = new Res<NoteDataType>();
 
   try {
     const db = getNote();
@@ -13,6 +14,7 @@ export default async function deleteNote(_id: string) {
     } else {
       delete db[_id];
       setNote(db);
+      response.setData(db);
       response.setOk();
     }
   } catch (error) {

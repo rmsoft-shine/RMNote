@@ -1,8 +1,7 @@
 'use client'
 
-import { useCurrentNote, useCurrentNotebook } from "@/store/store";
+import { useCurrentNotebook, useNoteData } from "@/store/store";
 import ButtonIcon from "./Common/Buttonicon";
-import { getNote } from "@/api/db";
 import ListItem from "./NoteList/ListItem";
 import { useEffect, useState } from "react";
 import { NoteType } from "@/types/note";
@@ -10,15 +9,15 @@ import { NoteType } from "@/types/note";
 export default function NoteList() {
   const [noteList, setNoteList] = useState<NoteType[]>([]);
   const currentNotebook = useCurrentNotebook((state) => state.currentNotebook);
-  const currentNote = useCurrentNote((state) => state.currentNote);
+  const noteData = useNoteData((state) => state.noteData);
 
   useEffect(() => {
-    const notes = Object.values(getNote())
+    const notes = Object.values(noteData)
       .filter((note) => note.notebook === currentNotebook?._id)
       .sort(() => -1);
 
     setNoteList(notes);
-  }, [currentNotebook, currentNote])
+  }, [currentNotebook, noteData])
   
 
   return (

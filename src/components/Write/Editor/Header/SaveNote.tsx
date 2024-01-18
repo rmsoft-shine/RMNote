@@ -1,12 +1,14 @@
+import { getNote } from "@/api/db";
 import editNote from "@/api/editNote";
 import useApi from "@/hooks/useApi";
-import { useCurrentNote } from "@/store/store";
+import { useCurrentNote, useNoteData } from "@/store/store";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
 export default function SaveNote() {
   const [editor] = useLexicalComposerContext();
   const currentNote = useCurrentNote((state) => state.currentNote);
   const setCurrentNote = useCurrentNote((state) => state.setCurrentNote);
+  const setNoteData = useNoteData((state) => state.setNoteData);
   const { isPending, run } = useApi(editNote);
 
   const onClick = async () => {
@@ -16,6 +18,7 @@ export default function SaveNote() {
 
     if (res.ok && res.payload) {
       setCurrentNote(res.payload);
+      setNoteData(getNote());
       console.log('저장 됐습니다.');
     } else {
       if (res.error) {

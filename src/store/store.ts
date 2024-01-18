@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { NoteType } from "@/types/note";
+import { NoteDataType, NoteType } from "@/types/note";
 import { NotebookDataType, NotebookType } from "@/types/notebook";
-import { UseCurrentNoteType, UseCurrentNotebookType, UseSideMenuType, UseNotebookDataType } from "@/types/store";
+import { UseCurrentNoteType, UseCurrentNotebookType, UseSideMenuType, UseNotebookDataType, UseNoteDataType } from "@/types/store";
 
 export const useSideMenuStore = create<UseSideMenuType>((set) => ({
   isSideMenu: true,
@@ -13,6 +13,11 @@ export const useSideMenuStore = create<UseSideMenuType>((set) => ({
 export const useNotebookData = create<UseNotebookDataType>((set) => ({
   notebookData: {},
   setNotebookData: (list: NotebookDataType) => set({ notebookData: list })
+}))
+
+export const useNoteData = create<UseNoteDataType>((set) => ({
+  noteData: {},
+  setNoteData: (list: NoteDataType) => set({ noteData: list }),
 }))
 
 export const useCurrentNotebook = create<UseCurrentNotebookType>((set) => ({
