@@ -5,9 +5,22 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
+import { ListItemNode, ListNode } from "@lexical/list";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { LinkNode } from "@lexical/link";
+import { CodeNode } from "@lexical/code";
 import { useCurrentNote } from "@/store/store";
 import CustomPlugin from "./Editor/CustomPlugin";
 import ToolBar from "./Editor/Header/ToolBar";
+
+const EDITOR_NODES = [
+  HeadingNode,
+  ListNode,
+  ListItemNode,
+  LinkNode,
+  QuoteNode,
+  CodeNode,
+];
 
 const theme = {
   paragraph: "mb-1",
@@ -18,7 +31,8 @@ const theme = {
     bold: "font-bold",
     italic: "italic",
     underline: "underline",
-    strikethrough: "line-through"
+    strikethrough: "line-through",
+    code: "bg-amber-100 p-1 font-mono"
   }
 }
 
@@ -33,6 +47,7 @@ export default function Editor() {
     namespace: 'MyEditor',
     theme: theme,
     onError,
+    nodes: EDITOR_NODES,
   };
 
   return (

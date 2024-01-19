@@ -1,8 +1,8 @@
-import addNotebook from "@/api/addNotebook";
-import Modal from "@/components/Modal";
-import useApi from "@/hooks/useApi";
+import { KeyboardEvent, useEffect, useRef } from "react";
 import { useNotebookData } from "@/store/store";
-import { useEffect, useRef } from "react";
+import addNotebook from "@/api/addNotebook";
+import useApi from "@/hooks/useApi";
+import Modal from "@/components/Modal";
 
 export default function AddNotebook({ onClick }: { onClick: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -14,6 +14,15 @@ export default function AddNotebook({ onClick }: { onClick: () => void }) {
       inputRef.current.focus();
     }
   }, []);
+
+  const keydownHandler = async (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      await add();
+    }
+    if (event.key === 'Escape') {
+      onClick();
+    }
+  }
 
   const add = async () => {
     if (inputRef.current) {
@@ -50,6 +59,7 @@ export default function AddNotebook({ onClick }: { onClick: () => void }) {
             id="add_notebook_name"
             type="text"
             placeholder="Enter notebook name"
+            onKeyDown={keydownHandler}
             ref={inputRef}
           />
         </div>

@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { useCurrentNote, useNoteData } from "@/store/store";
 import { BLUR_COMMAND, COMMAND_PRIORITY_NORMAL, SerializedEditorState } from "lexical";
+import { useCurrentNote, useNoteData } from "@/store/store";
 import { getNote } from "@/api/db";
 import editNote from "@/api/editNote";
 
@@ -59,11 +59,8 @@ export default function CustomPlugin() {
     return editor.registerCommand(
       BLUR_COMMAND,
       () => {
-        if (timer.current) {
-          clearTimeout(timer.current)};
-          if (currentNote?.content) {
-            edit(editor.getEditorState().toJSON());
-          }
+        if (timer.current) clearTimeout(timer.current);
+        edit(editor.getEditorState().toJSON());
           return false;
       },
       COMMAND_PRIORITY_NORMAL

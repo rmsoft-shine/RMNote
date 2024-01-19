@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { SerializedEditorState } from 'lexical';
+import { SerializedEditorState, SerializedLexicalNode } from 'lexical';
 
 export const noteSchema = z.object({
   _id: z.string().cuid2(),
   notebook: z.string().cuid2(),
-  content: z.custom<SerializedEditorState & JSON>().nullable(),
+  content: z.custom<SerializedEditorState<SerializedLexicalNode>>().nullable(),
   edittedAt: z.string(),
 })
 
