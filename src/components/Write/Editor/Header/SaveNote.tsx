@@ -1,3 +1,5 @@
+/* 사용 중단 */
+
 import { getNote } from "@/api/db";
 import editNote from "@/api/editNote";
 import useApi from "@/hooks/useApi";

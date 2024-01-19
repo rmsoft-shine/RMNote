@@ -4,7 +4,7 @@ import { SerializedEditorState } from 'lexical';
 export const noteSchema = z.object({
   _id: z.string().cuid2(),
   notebook: z.string().cuid2(),
-  content: z.custom<SerializedEditorState>().nullable(),
+  content: z.custom<SerializedEditorState & JSON>().nullable(),
   edittedAt: z.string(),
 })
 

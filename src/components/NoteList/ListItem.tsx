@@ -10,24 +10,30 @@ export default function ListItem({ note }: { note: NoteType }) {
   const update = useCurrentNote((state) => state.setCurrentNote);
   const pos = useRef({ x: 0, y: 0 });
 
+  /* 내용 미리보기 생성 */
   let title = "", content = "";
-  const noteContent = note.content as any;
-  if (noteContent) {
-    const children = noteContent.root.children.filter((c: any) => c.children.length > 0); // 1 depth
-    if (children.length > 1) {
-      if (children[0].children.length) {
-        children[0].children.forEach((node: any) => title += node.text);
+  try {
+    const noteContent = note.content as any;
+    if (noteContent) {
+      const children = noteContent.root.children.filter((c: any) => c.children.length > 0); // 1 depth
+      if (children.length > 1) {
+        if (children[0].children.length) {
+          children[0].children.forEach((node: any) => title += node.text);
+        }
+        if (children[1].children.length) {
+          children[1].children.forEach((node: any) => content += node.text);
+        }
       }
-      if (children[1].children.length) {
-        children[0].children.forEach((node: any) => content += node.text);
+      else if (children.length === 1) {
+        const textNode = children[0].children;
+        if (textNode.length) {
+          textNode.forEach((node: any) => title += node.text);
+        }
       }
     }
-    else if (children.length === 1) {
-      const textNode = children[0].children;
-      if (textNode.length) {
-        textNode.forEach((node: any) => title += node.text);
-      }
-    }
+  } catch (error) {
+    console.log('내용 미리보기 생성 실패!');
+    console.error(error);
   }
 
   const selectThis = () => {
