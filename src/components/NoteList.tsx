@@ -26,8 +26,8 @@ export default function NoteList() {
   
   const onClickHandler = (event: MouseEvent) => {
     event.preventDefault();
-    pos.current.x = event.pageX;
-    pos.current.y = event.pageY;
+    pos.current.x = event.clientX;
+    pos.current.y = event.clientY;
     setIsMenu(true);
   }
 

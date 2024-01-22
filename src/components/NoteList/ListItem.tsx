@@ -18,16 +18,16 @@ export default function ListItem({ note }: { note: NoteType }) {
       const children = noteContent.root.children.filter((c: any) => c.children.length > 0); // 1 depth
       if (children.length > 1) {
         if (children[0].children.length) {
-          children[0].children.forEach((node: any) => title += node.text);
+          children[0].children.forEach((node: any) => title += node.text.trim());
         }
         if (children[1].children.length) {
-          children[1].children.forEach((node: any) => content += node.text);
+          children[1].children.forEach((node: any) => content += node.text.trim());
         }
       }
       else if (children.length === 1) {
         const textNode = children[0].children;
         if (textNode.length) {
-          textNode.forEach((node: any) => title += node.text);
+          textNode.forEach((node: any) => title += node.text.trim());
         }
       }
     }

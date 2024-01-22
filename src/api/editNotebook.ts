@@ -22,15 +22,25 @@ export default async function editNotebook(
     if (!target) {
       throw new Error("해당 노트북을 찾을 수 없습니다.");
     }
-    target.name = name;
 
-    const newData = {
-      ...db,
+    const duplicatedCheck = Object.values(db)
+      .filter((notebook) => notebook.parent === db[_id].parent)
+      .filter((notebook) => notebook.name === name)
+      .length > 0;
+    
+    if (duplicatedCheck) {
+      throw new Error(`The name "${name}" is already taken.`);
+    } else {
+      target.name = name.trim();
+
+      const newData = {
+        ...db,
+      }
+  
+      setNotebook(newData);
+      response.setData(newData);
+      response.setOk();
     }
-
-    setNotebook(newData);
-    response.setData(newData);
-    response.setOk();
   } catch (error) {
     if (error instanceof Error) {
       console.log(error.message);
