@@ -10,6 +10,9 @@ export default async function addNotebook(name: string, parent: string | null = 
     if (name === "") {
       throw new Error("한 글자 이상 입력해야 합니다.");
     }
+    if (name.length > 100) {
+      throw new Error("노트북 이름은 100자 이내로만 가능합니다.");
+    }
 
     const db = getNotebook();
 

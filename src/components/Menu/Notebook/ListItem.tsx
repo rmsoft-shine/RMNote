@@ -1,5 +1,4 @@
 import { MouseEvent } from "react";
-import { getNote } from "@/api/db";
 import { useCurrentNote, useCurrentNotebook, useNoteData, useNotebookData } from "@/store/store";
 import deleteNotebook from "@/api/deleteNotebook";
 import useApi from "@/hooks/useApi";
@@ -61,6 +60,7 @@ export default function ListItem({
         + (isSelected ? " bg-zinc-100" : "")
       }
       onClick={selectThis}
+      title={notebook.name}
     >
       <div className="inline-block w-6 h-8 bg-red-300 min-w-[1.5rem] rounded"></div>
       <h3 className="shrink whitespace-nowrap">{notebook.name}</h3>

@@ -1,38 +1,46 @@
 import { KeyboardEvent, useEffect, useRef } from "react";
-import { useNotebookData } from "@/store/store";
-import addNotebook from "@/api/addNotebook";
+import { useCurrentNotebook, useNotebookData } from "@/store/store";
 import useApi from "@/hooks/useApi";
 import Modal from "@/components/Modal";
+import editNotebook from "@/api/editNotebook";
 
-export default function AddNotebook({ onClick }: { onClick: () => void }) {
+export default function EditModal({ onClick }: { onClick: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const { isPending, error, run } = useApi(addNotebook);
+  const { isPending, error, run } = useApi(editNotebook);
+  const currentNotebook = useCurrentNotebook((state) => state.currentNotebook);
+  const setCurrentNotebook = useCurrentNotebook((state) => state.setCurrentNotebook);
   const update = useNotebookData((state) => state.setNotebookData);
 
   useEffect(() => {
     if (inputRef.current) {
+      if (currentNotebook) {
+        inputRef.current.value = currentNotebook.name;
+      }
       inputRef.current.focus();
     }
   }, []);
 
   const keydownHandler = async (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      await add();
+      await edit();
     }
     if (event.key === 'Escape') {
       onClick();
     }
   }
 
-  const add = async () => {
+  const edit = async () => {
     if (inputRef.current) {
       if (inputRef.current.value.length > 100) {
         alert('노트북 이름은 100자 이내로만 가능합니다.');
         return;
       }
-      const res = await run(inputRef.current.value);
+      const res = await run(currentNotebook?._id, inputRef.current.value);
 
       if (res.ok && res.payload) {
+        if (currentNotebook) {
+          setCurrentNotebook(res.payload[currentNotebook?._id])
+        }
         update(res.payload);
         onClick();
       } else {
@@ -72,9 +80,9 @@ export default function AddNotebook({ onClick }: { onClick: () => void }) {
           disabled={isPending}
           className="block ml-auto rounded py-1 px-5 bg-blue-500 text-white border disabled:text-gray-300 disabled:bg-white"
           type="button"
-          onClick={add}
+          onClick={edit}
         >
-          Create
+          Update
         </button>
       </form>
     </Modal>
