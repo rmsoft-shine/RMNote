@@ -26,6 +26,7 @@ export default async function editNotebook(
     const duplicatedCheck = Object.values(db)
       .filter((notebook) => notebook.parent === db[_id].parent)
       .filter((notebook) => notebook.name === name)
+      .filter((notebook) => notebook._id !== _id)
       .length > 0;
     
     if (duplicatedCheck) {
