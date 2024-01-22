@@ -11,7 +11,6 @@ export default function Notebook() {
   const [isMore, setIsMore] = useState(false);
   const [isModal, setIsModal] = useState(false);
   const notebookData = useNotebookData((state) => state.notebookData);
-  const noteData = useNoteData((state) => state.noteData);
   const setNotebookData = useNotebookData((state) => state.setNotebookData);
   const setNoteData = useNoteData((state) => state.setNoteData);
 
@@ -43,7 +42,7 @@ export default function Notebook() {
         <span className="font-bold text-blue-600 grow text-ellipsis overflow-hidden">
           NOTEBOOKS         
           <span className="font-normal text-gray-400 ml-3">
-            {Object.keys(noteData).length}
+            {Object.keys(notebookData).length}
           </span>
         </span>
         <ButtonIcon
