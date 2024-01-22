@@ -27,7 +27,7 @@ export default async function addNotebook(name: string, parent: string | null = 
       const id = createId();
       const newNotebook = {
         _id: id,
-        name: name,
+        name: name.trim(),
         cover: "red",
         parent: parent,
       };

@@ -57,7 +57,7 @@ export default function EditModal({ onClick }: { onClick: () => void }) {
     <Modal onClick={onClick}>
       <form onSubmit={(event) => event.preventDefault()}>
         <h2 className="font-bold text-lg text-center mb-2 mx-auto">
-          Create New Notebook
+          Edit Notebook
         </h2>
         <div className="border-b py-4">
           <label

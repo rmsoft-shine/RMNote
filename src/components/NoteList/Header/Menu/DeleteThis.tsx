@@ -33,7 +33,7 @@ export default function DeleteThis({ offModal }: { offModal: () => void }) {
   return (
     <li className="hover:bg-gray-200 py-1 px-6 cursor-pointer">
       <button disabled={isPending} onClick={deleteThis}>
-        이 노트북 삭제하기
+        삭제하기
       </button>
     </li>
   )
