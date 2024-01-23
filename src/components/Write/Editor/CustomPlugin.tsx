@@ -50,12 +50,12 @@ export default function CustomPlugin() {
     }
   }, [editor, currentNote])
 
-  useEffect(() => {
-    if (currentNote?.content === null) {
-      // 새로운 노트 생성 시 포커스
-      editor.focus()
-    }
-  }, [editor, currentNote])
+  // useEffect(() => {
+  //   if (currentNote?.content === null) {
+  //     // 새로운 노트 생성 시 포커스
+  //     editor.focus()
+  //   }
+  // }, [editor, currentNote])
 
   useEffect(() => {
     // blur 이벤트 시 저장
@@ -78,7 +78,7 @@ export default function CustomPlugin() {
     return mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
         if (timer.current) clearTimeout(timer.current);
-        if (!isFirstRender.current) {
+        if (!isFirstRender.current && isChanged) {
           timer.current = setTimeout(() => {
             edit(editorState.toJSON());
           }, 2000)

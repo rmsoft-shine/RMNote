@@ -18,6 +18,9 @@ export default function NewNote() {
       alert("먼저 메모를 저장할 Notebook을 선택해주세요.");
       return;
     } else if (currentNote && currentNote.content === null) {
+      // console.log(document.querySelector('[data-lexical-editor=true]'));
+      const editor = document.querySelector('[contenteditable=true]') as HTMLDivElement;
+      if (editor) editor.focus();
       return;
     } else {
       const notebook = currentNotebook._id;
