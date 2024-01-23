@@ -52,9 +52,7 @@ export default function NoteList() {
                 y={pos.current.y}
                 onClick={() => setIsMenu(false)}
                 onModal={() => setIsModal(true)}
-              >
-                <></>
-              </Menu>}
+              />}
               {isModal && <EditModal onClick={() => setIsModal(false)}/>}
           </>
         )}

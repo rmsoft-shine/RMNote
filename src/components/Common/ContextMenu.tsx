@@ -39,7 +39,7 @@ export default function ContextMenu({
   return (
     <ul
       style={{ top: y + 10, left: x + 10 }}
-      className={`absolute drop-shadow-2xl bg-white border rounded py-4 m-0 w-max`}
+      className={`absolute drop-shadow-2xl bg-white border rounded py-4 m-0 w-max z-50`}
       onMouseDown={mDownHandler}
       onMouseUp={mUpHandler}
       onMouseOut={mUpHandler}
