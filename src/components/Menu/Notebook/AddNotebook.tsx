@@ -15,7 +15,11 @@ export default function AddNotebook({ onClick }: { onClick: () => void }) {
   const { isPending, run } = useApi(addNotebook);
   const update = useNotebookData((state) => state.setNotebookData);
   const form = useForm<z.infer<typeof addNotebookSchema>>({
-    resolver: zodResolver(addNotebookSchema)
+    resolver: zodResolver(addNotebookSchema),
+    defaultValues: {
+      add_notebook_name: "",
+    },
+    mode: 'onChange'
   });
 
   useEffect(() => {
@@ -67,11 +71,12 @@ export default function AddNotebook({ onClick }: { onClick: () => void }) {
                 <FormLabel className="text-gray-400 font-bold mr-8">Name</FormLabel>
                 <FormControl>
                   <Input 
+                    {...field}
                     placeholder="Enter notebook name"
-                    className="rounded bg-gray-200 px-4 py-2"
-                    {...field} />
+                    className="rounded bg-gray-200 px-4 py-2 w-auto inline-block"
+                  />
                 </FormControl>
-                <FormMessage className="w-full min-h-[20px] text-right my-2 text-sm text-red-500"/>
+                <FormMessage className="w-full min-h-[20px] text-right my-2 text-sm text-red-500" />
               </FormItem>
             )}
           />

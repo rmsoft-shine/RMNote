@@ -4,31 +4,35 @@ import useApi from "@/hooks/useApi";
 import Modal from "@/components/Modal";
 import editNotebook from "@/api/editNotebook";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { editNotebookSchema } from "../Schema";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function EditModal({ onClick }: { onClick: () => void }) {
-  const { isPending, error, run } = useApi(editNotebook);
+  const { isPending, run } = useApi(editNotebook);
   const currentNotebook = useCurrentNotebook((state) => state.currentNotebook);
   const setCurrentNotebook = useCurrentNotebook((state) => state.setCurrentNotebook);
   const update = useNotebookData((state) => state.setNotebookData);
-  const {
-    register,
-    setFocus,
-    setError,
-    clearErrors,
-    handleSubmit,
-    reset,
-    formState: { errors, isValid }
-  } = useForm<{ edit_notebook_name: string }>();
+  const form = useForm<z.infer<typeof editNotebookSchema>>({
+    resolver: zodResolver(editNotebookSchema),
+    defaultValues: {
+      edit_notebook_name: "",
+    },
+    mode: 'onChange'
+  });
 
   useEffect(() => {
-    setFocus('edit_notebook_name');
-  }, [setFocus])
+    form.setFocus('edit_notebook_name');
+  }, [form.setFocus])
 
   useEffect(() => {
-    reset({
+    form.reset({
       edit_notebook_name: currentNotebook?.name,
     });
-  }, [reset])
+  }, [form.reset])
 
   const keydownHandler = async (event: KeyboardEvent<HTMLFormElement>) => {
     if (event.key === 'Escape') {
@@ -50,7 +54,7 @@ export default function EditModal({ onClick }: { onClick: () => void }) {
       onClick();
     } else {
       if (res.error) {
-        setError('edit_notebook_name', {
+        form.setError('edit_notebook_name', {
           type: 'duplicated',
           message: res.error.message,
         })
@@ -62,53 +66,41 @@ export default function EditModal({ onClick }: { onClick: () => void }) {
 
   return (
     <Modal onClick={onClick}>
-      <form onSubmit={handleSubmit(onSubmit)} onKeyDown={keydownHandler}>
-        <h2 className="font-bold text-lg text-center mb-2 mx-auto">
-          Edit Notebook
-        </h2>
-        <div className="border-b py-4">
-          <label
-            className="text-gray-400 font-bold mr-8"
-            htmlFor="add_notebook_name"
+      <Form {...form}>
+        <form
+          className="m-2"
+          onSubmit={form.handleSubmit(onSubmit)}
+          onKeyDown={keydownHandler}
           >
-            Name
-          </label>
-          <input
-            className="rounded bg-gray-200 px-4 py-2"
-            id="add_notebook_name"
-            type="text"
-            placeholder="Enter notebook name"
-            {...register('edit_notebook_name', {
-              required: "한 글자 이상 입력해야 합니다.",
-              maxLength: {
-                value: 100,
-                message: "Notebook 이름은 100자를 넘을 수 없습니다."
-              },
-              onChange: (e) => {
-                if (!e.target.value) setError('edit_notebook_name', {
-                  type: 'required',
-                  message: '한 글자 이상 입력해야 합니다.'
-                })
-                else if (e.target.value.length > 100) setError('edit_notebook_name', {
-                  type: 'maxLength',
-                  message: 'Notebook 이름은 100자를 넘을 수 없습니다.'
-                })
-                else clearErrors();
-              }
-              })}
+          <h2 className="font-bold text-lg text-center mb-2 mx-auto">
+            Edit Notebook
+          </h2>
+          <FormField 
+            control={form.control}
+            name="edit_notebook_name"
+            render={({ field }) => (
+              <FormItem className="border-b py-4">
+                <FormLabel className="text-gray-400 font-bold mr-8">Name</FormLabel>
+                <FormControl>
+                  <Input 
+                    {...field}
+                    placeholder="Enter notebook name"
+                    className="rounded bg-gray-200 px-4 py-2 w-auto inline-block"
+                  />
+                </FormControl>
+                <FormMessage className="w-full min-h-[20px] text-right my-2 text-sm text-red-500" />
+              </FormItem>
+            )}
           />
-        </div>
-        <p className="w-full min-h-[20px] text-right my-2 text-sm text-red-500">
-          {errors.edit_notebook_name?.message || error}
-        </p>
-        <button
-          disabled={!isValid || isPending}
-          className="block ml-auto rounded py-1 px-5 bg-blue-500 text-white border disabled:text-gray-300 disabled:bg-white"
-          type="submit"
-        >
-          Update
-        </button>
-      </form>
+          <Button
+            disabled={!form.formState.isValid || isPending}
+            className="block ml-auto mt-2 rounded py-1 px-5 bg-blue-500 text-white border disabled:text-gray-300 disabled:bg-white"
+            type="submit"
+            >
+              Update
+          </Button>
+        </form>
+      </Form>
     </Modal>
   )
 }
