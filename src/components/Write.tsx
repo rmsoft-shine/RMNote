@@ -7,7 +7,7 @@ export default function Write() {
   const currentNote = useCurrentNote((state) => state.currentNote);
 
   return (
-    <section className="grow flex flex-col">
+    <section className="grow flex flex-col relative">
       {currentNote && <Editor />}
     </section>
   );

@@ -137,7 +137,7 @@ export default function ToolBar() {
         className={"rounded hover:bg-indigo-300" + (isCode ? " bg-indigo-300" : "")}
       />
       <ButtonIcon
-        icon="highlight"
+        icon="drive_file_rename_outline"
         onClick={() => textCommandDispatch("highlight")}
         className={"rounded hover:bg-indigo-300" + (isHighlight ? " bg-indigo-300" : "")}
       />

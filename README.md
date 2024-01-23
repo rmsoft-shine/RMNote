@@ -59,6 +59,12 @@
     - placeholder는 아무 기능이 없고 내용이 없음을 표시할 뿐인데, 하나의 html요소로 인식되어 뒤에 있는 editor가 클릭되지 않았습니다.
     - 해당 요소에 pointer-events: none 속성을 부여해 해결했습니다.
 
+  10. input 입력 시 setError가 trigger 되지 않는 현상
+
+    - react-hook-form을 사용하여 사용자에게 실시간으로 validation 오류를 보여주고자 했습니다만, submit 하지 않으면 formState의 errors 상태가 업데이트 되지 않았습니다.
+    - 이는 useForm의 mode 기본값이 'onSubmit'이기 때문이고, 인자에 mode를 전달하여 값을 변경할 수 있었습니다.
+    - 사용자 입력이 변함에 따라 validation 오류를 보여주고자 했으므로, mode의 값을 onChange로 설정했습니다.
+
 
 ## 미해결 과제 및 아이디어
 
