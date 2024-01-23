@@ -46,6 +46,8 @@ export default function CustomPlugin() {
       if (currentNote?.content) {
         const parsed = editor.parseEditorState(currentNote?.content);
         editor.setEditorState(parsed);
+      } else {
+        editor.focus();
       }
     }
   }, [editor, currentNote])
@@ -78,7 +80,7 @@ export default function CustomPlugin() {
     return mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
         if (timer.current) clearTimeout(timer.current);
-        if (!isFirstRender.current && isChanged) {
+        if (!isFirstRender.current && isChanged.current) {
           timer.current = setTimeout(() => {
             edit(editorState.toJSON());
           }, 2000)
